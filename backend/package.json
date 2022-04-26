@@ -4,7 +4,7 @@
     "description": "Backend for inventoryapp",
     "main": "dist/index.js",
     "scripts": {
-        "start": "npx nodemon ./src/index.ts",
+        "start": "npx nodemon .src/index.ts",
         "lint": "eslint . --ext .ts",
         "test": "echo \"Error: no test specified\" && exit 1"
     },
