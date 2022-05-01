@@ -2,6 +2,7 @@ import dotenv from "dotenv";
 import express from "express";
 import mongoose from "mongoose";
 import config from "./config/config";
+import { errorHandling } from "./middleware/errorMiddleware";
 import { router } from "./routes/routes";
 
 dotenv.config();

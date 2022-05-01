@@ -1,5 +1,4 @@
-import express, { Request, Response } from "express";
-import { ObjectId } from "mongodb";
+import express from "express";
 import { getAllItems, hello, createItem } from "../controllers/controller";
 
 export const router = express.Router();

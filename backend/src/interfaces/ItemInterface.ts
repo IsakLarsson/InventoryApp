@@ -1,6 +1,4 @@
-import { Document } from "mongoose";
-
-export default interface ItemInterface extends Document {
+export default interface ItemInterface {
     name: string;
     value: number;
     extraInformation: string;

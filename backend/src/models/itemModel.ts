@@ -1,7 +1,7 @@
 import mongoose, { Schema } from "mongoose";
 import ItemInterface from "../interfaces/ItemInterface";
 
-const ItemScehma: Schema = new Schema(
+const itemScehma: Schema = new Schema(
     {
         name: { type: String, required: true },
         value: { type: Number, required: true },
@@ -12,4 +12,4 @@ const ItemScehma: Schema = new Schema(
     }
 );
 
-export default mongoose.model<ItemInterface>("Item", ItemScehma);
+export default mongoose.model<ItemInterface>("Item", itemScehma);

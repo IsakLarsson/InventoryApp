@@ -1,5 +1,5 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
-import Item from "../models/item";
+import Item from "../models/itemModel";
 import mongoose from "mongoose";
 
 export const createItem = async (
@@ -8,12 +8,11 @@ export const createItem = async (
     next: NextFunction
 ) => {
     const { name, value } = req.body;
-
     const item = new Item({
-        _id: new mongoose.Types.ObjectId(),
         name: name,
         value: value,
     });
+
     try {
         const result = await item.save();
         return res.status(201).json({ item: result });
