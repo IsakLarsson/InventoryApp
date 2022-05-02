@@ -1,5 +1,8 @@
+import ItemInterface from "./ItemInterface";
+import { Money } from "./Money";
+
 export interface UserInterface {
-    name: string;
-    inventory: object[];
-    money: { gold?: number; silver?: number; copper?: number };
+    userName: string;
+    inventory: ItemInterface[];
+    money: Money;
 }

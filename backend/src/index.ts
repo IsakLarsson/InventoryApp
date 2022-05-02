@@ -4,6 +4,7 @@ import mongoose from "mongoose";
 import config from "./config/config";
 import { errorHandling } from "./middleware/errorMiddleware";
 import { router } from "./routes/routes";
+import { userRouter } from "./routes/userRoutes";
 
 dotenv.config();
 const app = express();
@@ -20,6 +21,7 @@ mongoose
 
 app.use(express.json());
 app.use(router);
+app.use(userRouter);
 
 app.listen(port, () => {
     return console.log(`Express is listening at http://localhost:${port}`);
