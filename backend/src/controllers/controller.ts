@@ -1,9 +1,7 @@
 import { NextFunction, Request, RequestHandler, Response } from "express";
 import Item from "../models/itemModel";
-import User from "../models/userModel";
 
 import mongoose from "mongoose";
-import { UserInterface } from "./../interfaces/userInterface";
 
 export const createItem = async (
     req: Request,

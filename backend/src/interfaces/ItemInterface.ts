@@ -1,7 +1,7 @@
-import { Money } from "./Money";
+import { Coins } from "./coins";
 
 export default interface ItemInterface {
     name: string;
-    value: Money;
+    value: Coins;
     extraInformation?: string;
 }

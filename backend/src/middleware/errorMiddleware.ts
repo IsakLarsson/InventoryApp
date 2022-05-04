@@ -1,4 +1,9 @@
-import express, { Request, Response } from "express";
+import express, {
+    ErrorRequestHandler,
+    NextFunction,
+    Request,
+    Response,
+} from "express";
 
 interface ResponseError extends Error {
     status?: number;
@@ -6,12 +11,13 @@ interface ResponseError extends Error {
 }
 
 export const errorHandling = (
-    err: ResponseError,
+    err: any,
     req: Request,
-    res: Response
+    res: Response,
+    next: NextFunction
 ) => {
     const statusCode = res.statusCode ? res.statusCode : 500;
-
+    console.log("hej");
     console.error(process.env.NODE_ENV == "development" ? err.stack : "");
     res.status(statusCode).json({
         message: err.message
