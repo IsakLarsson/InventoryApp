@@ -10,6 +10,11 @@ dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
+/* process.on("uncaughtException", function (err) {
+    console.error(err);
+    console.log("Node NOT Exiting...");
+});
+ */
 mongoose
     .connect(config.mongo.url, config.mongo.options)
     .then((result) => {

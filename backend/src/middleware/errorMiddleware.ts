@@ -16,8 +16,8 @@ export const errorHandling = (
     res: Response,
     next: NextFunction
 ) => {
+    console.log("ERROR DETECTED");
     const statusCode = res.statusCode ? res.statusCode : 500;
-    console.log("hej");
     console.error(process.env.NODE_ENV == "development" ? err.stack : "");
     res.status(statusCode).json({
         message: err.message

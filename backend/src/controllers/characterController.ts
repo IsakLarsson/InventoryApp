@@ -1,5 +1,4 @@
-import express, { Request, Response } from "express";
-import { stat } from "fs";
+import express, { NextFunction, Request, Response } from "express";
 import { CharacterInterface } from "../interfaces/CharacterInterface";
 import ItemInterface from "../interfaces/ItemInterface";
 import Character from "../models/characterModel";
@@ -30,8 +29,7 @@ export const getAllCharacters = async (req: Request, res: Response) => {
         return res.status(200).json({ character: result });
     } catch (error) {
         if (error instanceof Error) {
-            respondWithStatus(res, 500, error.message);
-            return;
+            return res.status(500).json({ message: error.message });
         }
     }
 };
@@ -45,11 +43,11 @@ export const getCharacterById = async (req: Request, res: Response) => {
 
     try {
         const result = await Character.findById(characterId);
+
         return res.status(200).json({ character: result });
     } catch (error) {
         if (error instanceof Error) {
-            respondWithStatus(res, 500, error.message);
-            return;
+            return res.status(500).json({ message: error.message });
         }
     }
 };
@@ -57,7 +55,6 @@ export const getCharacterById = async (req: Request, res: Response) => {
 export const addItemToInventory = async (req: Request, res: Response) => {
     const characterId = req.params.id;
     const { itemName } = req.body;
-    console.log(itemName);
 
     const newItem: ItemInterface = {
         name: itemName,
@@ -65,18 +62,43 @@ export const addItemToInventory = async (req: Request, res: Response) => {
     };
 
     try {
+        const result = await Character.findById(characterId);
+        result?.inventory.push(newItem);
+        result?.save();
+        res.status(200).json({ updatedCharacter: result });
+    } catch (error) {
+        if (error instanceof Error) {
+            return res.status(500).json({ message: error.message });
+        }
+    }
+};
+
+export const deleteItemFromInventory = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+) => {
+    const characterId = req.params.id;
+    const { itemName } = req.body;
+
+    if (!itemName) {
+        return res.status(500).json({ errorMessage: "Invalid body" });
+    }
+
+    try {
         const result = await Character.findByIdAndUpdate(
             characterId,
             {
-                $push: { inventory: newItem },
+                $pull: { inventory: { name: itemName } },
             },
-            { lean: true, new: true }
+            {
+                new: true,
+            }
         );
         res.status(200).json({ updatedCharacter: result });
     } catch (error) {
         if (error instanceof Error) {
-            respondWithStatus(res, 500, error.message);
-            return;
+            return res.status(500).json({ message: error.message });
         }
     }
 };
@@ -93,8 +115,7 @@ export const deleteCharacterById = async (req: Request, res: Response) => {
         return res.status(200).json({ character: result });
     } catch (error) {
         if (error instanceof Error) {
-            respondWithStatus(res, 500, error.message);
-            return;
+            return res.status(500).json({ message: error.message });
         }
     }
 };
