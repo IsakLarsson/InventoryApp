@@ -22,7 +22,7 @@ characterRoutes.patch(
     addItemToInventory
 );
 
-characterRoutes.patch("/api/characters/:id/coins/add", changeCoinsById);
+characterRoutes.patch("/api/characters/:id/coins", changeCoinsById);
 
 characterRoutes.delete(
     "/api/characters/:id/inventory/deleteItem",

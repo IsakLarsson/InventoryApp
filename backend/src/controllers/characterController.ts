@@ -139,9 +139,9 @@ export const changeCoinsById = async (req: Request, res: Response) => {
             //Currently supports negative values
 
             const newCoins: Coins = {
-                gold: result.coins.gold + gold,
-                silver: result.coins.silver + silver,
-                copper: result.coins.copper + copper,
+                gold: result.coins.gold + parseInt(gold),
+                silver: result.coins.silver + parseInt(silver),
+                copper: result.coins.copper + parseInt(copper),
             };
 
             result.coins = newCoins;
