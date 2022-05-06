@@ -14,8 +14,8 @@ export const createCharacter = async (req: Request, res: Response) => {
     });
 
     try {
-        const result = await newCharacter.save();
-        return res.status(201).json({ created_character: result });
+        const savedCharacter = await newCharacter.save();
+        return res.status(201).json({ created_character: savedCharacter });
     } catch (error) {
         if (error instanceof Error) {
             res.status(500);
@@ -26,8 +26,8 @@ export const createCharacter = async (req: Request, res: Response) => {
 
 export const getAllCharacters = async (req: Request, res: Response) => {
     try {
-        const result = await Character.find();
-        return res.status(200).json({ character: result });
+        const foundCharacters = await Character.find();
+        return res.status(200).json({ characters: foundCharacters });
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -43,9 +43,8 @@ export const getCharacterById = async (req: Request, res: Response) => {
     }
 
     try {
-        const result = await Character.findById(characterId);
-
-        return res.status(200).json({ character: result });
+        const foundCharacter = await Character.findById(characterId);
+        return res.status(200).json({ character: foundCharacter });
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -61,12 +60,19 @@ export const addItemToInventory = async (req: Request, res: Response) => {
         name: itemName,
         value: { gold: 1337, silver: 0, copper: 0 },
     };
-    console.log(characterId, newItem);
+
     try {
-        const result = await Character.findById(characterId);
-        result?.inventory.push(newItem);
-        await result?.save();
-        return res.status(200).json({ updatedCharacter: result });
+        const foundCharacter = await Character.findById(characterId);
+
+        if (foundCharacter != undefined) {
+            foundCharacter.inventory.push(newItem);
+            await foundCharacter.save();
+            return res.status(200).json({ updatedCharacter: foundCharacter });
+        } else {
+            return res
+                .status(404)
+                .json({ message: "Couldn't find that character!" });
+        }
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -87,7 +93,7 @@ export const deleteItemFromInventory = async (
     }
 
     try {
-        const result = await Character.findByIdAndUpdate(
+        const foundCharacter = await Character.findByIdAndUpdate(
             characterId,
             {
                 $pull: { inventory: { name: itemName } },
@@ -96,7 +102,7 @@ export const deleteItemFromInventory = async (
                 new: true,
             }
         );
-        res.status(200).json({ updatedCharacter: result });
+        res.status(200).json({ updatedCharacter: foundCharacter });
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -112,8 +118,8 @@ export const deleteCharacterById = async (req: Request, res: Response) => {
     }
 
     try {
-        const result = await Character.findByIdAndDelete(characterId);
-        return res.status(200).json({ character: result });
+        const deletedCharacter = await Character.findByIdAndDelete(characterId);
+        return res.status(200).json({ deletedCharacter: deletedCharacter });
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -123,7 +129,7 @@ export const deleteCharacterById = async (req: Request, res: Response) => {
 
 export const changeCoinsById = async (req: Request, res: Response) => {
     const characterId = req.params.id;
-    const { gold, silver, copper } = req.body;
+    const newCoins: Coins = req.body;
 
     if (!idIsValid(characterId)) {
         respondWithStatus(res, 500, "Invalid ID");
@@ -133,26 +139,31 @@ export const changeCoinsById = async (req: Request, res: Response) => {
     //Fix so that strings are invalid coin values
 
     try {
-        const result = await Character.findById(characterId);
-        if (result != undefined) {
-            console.log("CURRENT COINS:", result.coins);
-            //Currently supports negative values
-
-            const newCoins: Coins = {
-                gold: result.coins.gold + parseInt(gold),
-                silver: result.coins.silver + parseInt(silver),
-                copper: result.coins.copper + parseInt(copper),
-            };
-
-            result.coins = newCoins;
-            await result.save();
-            res.status(200).json({ updatedCharacter: result });
+        const foundCharacter = await Character.findById(characterId);
+        if (foundCharacter != undefined) {
+            const currentCoins = foundCharacter.coins;
+            foundCharacter.coins = sumCoins(currentCoins, newCoins);
+            await foundCharacter.save();
+            res.status(200).json({ updatedCharacter: foundCharacter });
+        } else {
+            return res
+                .status(404)
+                .json({ message: "Couldn't find that character!" });
         }
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
         }
     }
+};
+
+const sumCoins = (currentCoins: Coins, newCoins: Coins): Coins => {
+    const totalCoins: Coins = {
+        gold: currentCoins.gold + newCoins.gold,
+        silver: currentCoins.silver + newCoins.silver,
+        copper: currentCoins.copper + newCoins.copper,
+    };
+    return totalCoins;
 };
 
 const idIsValid = (id: string) => {
