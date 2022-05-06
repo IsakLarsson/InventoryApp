@@ -26,7 +26,7 @@ export const createCharacter = async (req: Request, res: Response) => {
 
 export const getAllCharacters = async (req: Request, res: Response) => {
     try {
-        const foundCharacters = await Character.find();
+        const foundCharacters = await Character.find().exec();
         return res.status(200).json({ characters: foundCharacters });
     } catch (error) {
         if (error instanceof Error) {
@@ -43,7 +43,7 @@ export const getCharacterById = async (req: Request, res: Response) => {
     }
 
     try {
-        const foundCharacter = await Character.findById(characterId);
+        const foundCharacter = await Character.findById(characterId).exec();
         return res.status(200).json({ character: foundCharacter });
     } catch (error) {
         if (error instanceof Error) {
@@ -57,12 +57,12 @@ export const addItemToInventory = async (req: Request, res: Response) => {
     const { itemName } = req.body;
 
     const newItem: ItemInterface = {
-        name: itemName,
+        itemName: itemName,
         value: { gold: 1337, silver: 0, copper: 0 },
     };
 
     try {
-        const foundCharacter = await Character.findById(characterId);
+        const foundCharacter = await Character.findById(characterId).exec();
 
         if (foundCharacter != undefined) {
             foundCharacter.inventory.push(newItem);
@@ -80,11 +80,7 @@ export const addItemToInventory = async (req: Request, res: Response) => {
     }
 };
 
-export const deleteItemFromInventory = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-) => {
+export const deleteItemFromInventory = async (req: Request, res: Response) => {
     const characterId = req.params.id;
     const { itemName } = req.body;
 
@@ -101,7 +97,7 @@ export const deleteItemFromInventory = async (
             {
                 new: true,
             }
-        );
+        ).exec();
         res.status(200).json({ updatedCharacter: foundCharacter });
     } catch (error) {
         if (error instanceof Error) {
@@ -118,7 +114,9 @@ export const deleteCharacterById = async (req: Request, res: Response) => {
     }
 
     try {
-        const deletedCharacter = await Character.findByIdAndDelete(characterId);
+        const deletedCharacter = await Character.findByIdAndDelete(
+            characterId
+        ).exec();
         return res.status(200).json({ deletedCharacter: deletedCharacter });
     } catch (error) {
         if (error instanceof Error) {
@@ -139,7 +137,7 @@ export const changeCoinsById = async (req: Request, res: Response) => {
     //Fix so that strings are invalid coin values
 
     try {
-        const foundCharacter = await Character.findById(characterId);
+        const foundCharacter = await Character.findById(characterId).exec();
         if (foundCharacter != undefined) {
             const currentCoins = foundCharacter.coins;
             foundCharacter.coins = sumCoins(currentCoins, newCoins);

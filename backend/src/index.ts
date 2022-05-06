@@ -3,18 +3,13 @@ import express from "express";
 import mongoose from "mongoose";
 import config from "./config/config";
 import { errorHandling } from "./middleware/errorMiddleware";
-import { router } from "./routes/routes";
 import characterRoutes from "./routes/characterRoutes";
+import itemRoutes from "./routes/itemRoutes";
 
 dotenv.config();
 const app = express();
 const port = process.env.PORT;
 
-/* process.on("uncaughtException", function (err) {
-    console.error(err);
-    console.log("Node NOT Exiting...");
-});
- */
 mongoose
     .connect(config.mongo.url, config.mongo.options)
     .then((result) => {
@@ -25,7 +20,7 @@ mongoose
     });
 
 app.use(express.json());
-app.use(router);
+app.use(itemRoutes);
 app.use(characterRoutes);
 app.use(errorHandling);
 
