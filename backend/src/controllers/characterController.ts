@@ -61,12 +61,12 @@ export const addItemToInventory = async (req: Request, res: Response) => {
         name: itemName,
         value: { gold: 1337, silver: 0, copper: 0 },
     };
-
+    console.log(characterId, newItem);
     try {
         const result = await Character.findById(characterId);
         result?.inventory.push(newItem);
-        result?.save();
-        res.status(200).json({ updatedCharacter: result });
+        await result?.save();
+        return res.status(200).json({ updatedCharacter: result });
     } catch (error) {
         if (error instanceof Error) {
             return res.status(500).json({ message: error.message });
@@ -121,7 +121,7 @@ export const deleteCharacterById = async (req: Request, res: Response) => {
     }
 };
 
-export const addCoinsById = async (req: Request, res: Response) => {
+export const changeCoinsById = async (req: Request, res: Response) => {
     const characterId = req.params.id;
     const { gold, silver, copper } = req.body;
 
@@ -130,26 +130,22 @@ export const addCoinsById = async (req: Request, res: Response) => {
         return;
     }
 
-    //Fix so that strings are invalid coin values. Also, an empty request replaces the whole coins object with an empty object
-    const newCoins: Coins = {
-        gold: gold,
-        silver: silver,
-        copper: copper,
-    };
+    //Fix so that strings are invalid coin values
 
     try {
         const result = await Character.findById(characterId);
         if (result != undefined) {
-            console.log(result.coins);
-            result.coins = {
-                gold: result.coins.gold + 1,
-                silver: 0,
-                copper: 0,
+            console.log("CURRENT COINS:", result.coins);
+            //Currently supports negative values
+
+            const newCoins: Coins = {
+                gold: result.coins.gold + gold,
+                silver: result.coins.silver + silver,
+                copper: result.coins.copper + copper,
             };
-            result.coins.gold = newCoins.gold;
-            result.coins.silver += newCoins.silver;
-            result.coins.copper += newCoins.copper;
-            result.save();
+
+            result.coins = newCoins;
+            await result.save();
             res.status(200).json({ updatedCharacter: result });
         }
     } catch (error) {

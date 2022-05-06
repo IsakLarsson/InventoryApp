@@ -1,6 +1,6 @@
 import express from "express";
 import {
-    addCoinsById,
+    changeCoinsById,
     addItemToInventory,
     createCharacter,
     deleteCharacterById,
@@ -22,7 +22,7 @@ characterRoutes.patch(
     addItemToInventory
 );
 
-characterRoutes.patch("/api/characters/:id/coins/add", addCoinsById);
+characterRoutes.patch("/api/characters/:id/coins/add", changeCoinsById);
 
 characterRoutes.delete(
     "/api/characters/:id/inventory/deleteItem",
