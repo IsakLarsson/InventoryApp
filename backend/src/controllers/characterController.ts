@@ -54,11 +54,12 @@ export const getCharacterById = async (req: Request, res: Response) => {
 
 export const addItemToInventory = async (req: Request, res: Response) => {
     const characterId = req.params.id;
-    const { itemName, value } = req.body;
+    const { itemName, value, description } = req.body;
 
     const newItem = new Item<ItemInterface>({
         itemName: itemName,
         value: value,
+        description: description,
     });
 
     try {
