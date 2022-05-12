@@ -9,7 +9,7 @@ const itemScehma = new Schema<ItemInterface>(
             silver: { type: Number, default: 0, required: true },
             copper: { type: Number, default: 0, required: true },
         },
-        extraInformation: { type: String, required: false },
+        description: { type: String, required: false },
     },
     {
         timestamps: true,

@@ -3,6 +3,7 @@ import { CharacterInterface } from "../interfaces/CharacterInterface";
 import ItemInterface from "../interfaces/ItemInterface";
 import Character from "../models/characterModel";
 import { Coins } from "../interfaces/coins";
+import Item from "../models/itemModel";
 
 export const createCharacter = async (req: Request, res: Response) => {
     const { name } = req.body;
@@ -18,7 +19,6 @@ export const createCharacter = async (req: Request, res: Response) => {
         return res.status(201).json({ created_character: savedCharacter });
     } catch (error) {
         if (error instanceof Error) {
-            res.status(500);
             return res.status(500).json({ errorMessage: error.message });
         }
     }
@@ -54,12 +54,12 @@ export const getCharacterById = async (req: Request, res: Response) => {
 
 export const addItemToInventory = async (req: Request, res: Response) => {
     const characterId = req.params.id;
-    const { itemName } = req.body;
+    const { itemName, value } = req.body;
 
-    const newItem: ItemInterface = {
+    const newItem = new Item<ItemInterface>({
         itemName: itemName,
-        value: { gold: 1337, silver: 0, copper: 0 },
-    };
+        value: value,
+    });
 
     try {
         const foundCharacter = await Character.findById(characterId).exec();
@@ -92,12 +92,12 @@ export const deleteItemFromInventory = async (req: Request, res: Response) => {
         const foundCharacter = await Character.findByIdAndUpdate(
             characterId,
             {
-                $pull: { inventory: { name: itemName } },
+                $pull: { inventory: { itemName: itemName } },
             },
             {
                 new: true,
             }
-        ).exec();
+        );
         res.status(200).json({ updatedCharacter: foundCharacter });
     } catch (error) {
         if (error instanceof Error) {
