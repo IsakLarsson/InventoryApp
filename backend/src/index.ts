@@ -5,6 +5,7 @@ import config from "./config/config";
 import { errorHandling } from "./middleware/errorMiddleware";
 import characterRoutes from "./routes/characterRoutes";
 import itemRoutes from "./routes/itemRoutes";
+import userRoutes from "./routes/userRoutes";
 
 dotenv.config();
 const app = express();
@@ -35,6 +36,7 @@ mongoose
 app.use(express.json());
 app.use(itemRoutes);
 app.use(characterRoutes);
+app.use(userRoutes);
 app.use(errorHandling);
 
 app.listen(port, () => {

@@ -4,6 +4,11 @@ import { CharacterInterface } from "../interfaces/CharacterInterface";
 
 const characterSchema = new Schema<CharacterInterface>(
     {
+        user: {
+            type: mongoose.Schema.Types.ObjectId,
+            required: true,
+            ref: "User",
+        },
         name: { type: String, required: true },
         inventory: { type: [Object], required: true },
         coins: {
