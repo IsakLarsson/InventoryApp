@@ -1,41 +1,22 @@
 import { useEffect, useState } from "react";
-import { StatusBar } from "expo-status-bar";
 import { StyleSheet, Text, View } from "react-native";
-import axios from "axios";
+import Login from "./src/pages/Login";
+import Register from "./src/pages/Register";
+import { NavigationContainer } from "@react-navigation/native";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Dashboard from "./src/pages/Dashboard";
+
+const Stack = createNativeStackNavigator();
 
 export default function App() {
-    const [response, setResponse] = useState();
-
-    const getChars = async () => {
-        try {
-            const response = await axios.get(
-                "http://192.168.0.166:3000/api/characters"
-            );
-            setResponse(response);
-            console.log(response.data.characters[0].name);
-        } catch (error) {
-            console.error(error);
-        }
-    };
-
-    useEffect(() => {
-        getChars();
-
-        return () => {};
-    }, []);
-
     return (
-        <View style={styles.container}>
-            {response ? (
-                response.data.characters.map((character, index) => (
-                    <Text key={index}> {character.name} </Text>
-                ))
-            ) : (
-                <Text>Hej</Text>
-            )}
-
-            <StatusBar style="auto" />
-        </View>
+        <NavigationContainer>
+            <Stack.Navigator>
+                <Stack.Screen name="Login" component={Login} />
+                <Stack.Screen name="Register" component={Register} />
+                <Stack.Screen name="Dashboard" component={Dashboard} />
+            </Stack.Navigator>
+        </NavigationContainer>
     );
 }
 
