@@ -16,7 +16,7 @@ characterRoutes.post("/api/characters/create", protect, createCharacter);
 
 characterRoutes.get("/api/characters/:id", protect, getCharacterById);
 
-characterRoutes.get("/api/characters/", getAllCharacters);
+characterRoutes.get("/api/characters/", protect, getAllCharacters);
 
 characterRoutes.patch(
     "/api/characters/:id/inventory/addItem",

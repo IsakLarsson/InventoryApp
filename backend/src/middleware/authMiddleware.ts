@@ -6,6 +6,7 @@ import { Request, Response, NextFunction } from "express";
 export const protect = asyncHandler(
     async (req: any, res: Response, next: NextFunction) => {
         let token;
+
         if (
             req.headers.authorization &&
             req.headers.authorization.startsWith("Bearer")

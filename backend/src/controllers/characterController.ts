@@ -6,27 +6,26 @@ import { Coins } from "../interfaces/coins";
 import Item from "../models/itemModel";
 import asyncHandler from "express-async-handler";
 
-export const createCharacter = asyncHandler(
-    async (req: Request, res: Response) => {
-        const { name } = req.body;
+export const createCharacter = asyncHandler(async (req: any, res: Response) => {
+    const { name } = req.body;
 
-        const newCharacter = new Character<CharacterInterface>({
-            name: name,
-            inventory: [],
-            coins: { gold: 0, silver: 0, copper: 40 },
-        });
+    const newCharacter = new Character<CharacterInterface>({
+        name: name,
+        inventory: [],
+        coins: { gold: 0, silver: 0, copper: 40 },
+        user: req.user.id,
+    });
 
-        try {
-            const savedCharacter = await newCharacter.save();
-            res.status(201).json({ created_character: savedCharacter });
-            return;
-        } catch (error) {
-            if (error instanceof Error) {
-                throw new Error(error.message);
-            }
+    try {
+        const savedCharacter = await newCharacter.save();
+        res.status(201).json({ created_character: savedCharacter });
+        return;
+    } catch (error) {
+        if (error instanceof Error) {
+            throw new Error(error.message);
         }
     }
-);
+});
 
 export const getAllCharacters = asyncHandler(
     async (req: any, res: Response) => {
@@ -48,8 +47,7 @@ export const getCharacterById = asyncHandler(
     async (req: Request, res: Response) => {
         const characterId = req.params.id;
         if (!idIsValid(characterId)) {
-            respondWithStatus(res, 500, "Invalid ID");
-            return;
+            throw new Error("Ivalid ID");
         }
 
         try {
@@ -130,14 +128,19 @@ export const deleteCharacterById = asyncHandler(
     async (req: Request, res: Response) => {
         const characterId = req.params.id;
         if (!idIsValid(characterId)) {
-            respondWithStatus(res, 500, "Invalid ID");
-            return;
+            throw new Error("Invalid ID");
         }
 
         try {
             const deletedCharacter = await Character.findByIdAndDelete(
                 characterId
             ).exec();
+
+            if (!deletedCharacter) {
+                res.status(404);
+                throw new Error("Character not found");
+            }
+
             res.status(200).json({ deletedCharacter: deletedCharacter });
             return;
         } catch (error) {
@@ -154,8 +157,7 @@ export const changeCoinsById = asyncHandler(
         const newCoins: Coins = req.body;
 
         if (!idIsValid(characterId)) {
-            respondWithStatus(res, 500, "Invalid ID");
-            return;
+            throw new Error("Invalid ID");
         }
 
         //Fix so that strings are invalid coin values
@@ -193,12 +195,4 @@ const idIsValid = (id: string) => {
     if (id.match(/^[0-9a-fA-F]{24}$/)) {
         return true;
     }
-};
-
-const respondWithStatus = (
-    res: Response,
-    statusCode: number,
-    message: string
-) => {
-    return res.status(statusCode).json({ message: message });
 };
