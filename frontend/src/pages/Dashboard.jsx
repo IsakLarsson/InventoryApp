@@ -4,7 +4,7 @@ import React from "react";
 export default function Dashboard() {
     return (
         <View>
-            <Text>Dashboard</Text>
+            <Text>You are now logged in</Text>
         </View>
     );
 }

@@ -1,18 +1,43 @@
 import { StyleSheet, Text, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
-import { useForm, Controller } from "react-hook-form";
 import CustomButton from "../components/CustomButton";
-import axios from "axios";
+import { useSelector, useDispatch } from "react-redux";
+import { register, reset } from "../features/auth/authSlice";
 
 export default function Login({ navigation }) {
-    const [userName, setUserName] = useState("");
+    const [name, setName] = useState("");
     const [password, setPassword] = useState("");
     const [passwordConfirm, setPasswordConfirm] = useState("");
     const [email, setEmail] = useState("");
 
+    const dispatch = useDispatch();
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+        (state) => state.auth
+    );
+
+    useEffect(() => {
+        if (isError) {
+            alert(message);
+        }
+        if (isSuccess || user) {
+            navigation.navigate("Dashboard");
+        }
+        dispatch(reset());
+    }, [user, isError, isSuccess, message, dispatch]);
+
     const onCreateUser = async () => {
-        alert("create");
+        if (password !== passwordConfirm) {
+            alert("Passwords do not match");
+        } else {
+            const userData = {
+                email,
+                name,
+                password,
+            };
+
+            dispatch(register(userData));
+        }
     };
 
     return (
@@ -21,6 +46,7 @@ export default function Login({ navigation }) {
             showsVerticalScrollIndicator={false}
         >
             <Text style={styles.title}>Create Account</Text>
+            <Text style={styles.text}>It's free real estate</Text>
 
             <CustomInput
                 placeholder="Email"
@@ -29,8 +55,8 @@ export default function Login({ navigation }) {
             />
             <CustomInput
                 placeholder="Username"
-                value={userName}
-                setValue={setUserName}
+                value={name}
+                setValue={setName}
             />
             <CustomInput
                 placeholder="Password"
@@ -75,5 +101,10 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         margin: 10,
         color: "white",
+    },
+    text: {
+        fontSize: 16,
+        color: "#eee",
+        marginBottom: 30,
     },
 });

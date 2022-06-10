@@ -2,6 +2,7 @@ import { StyleSheet, Text, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
+import { useDispatch } from "react-redux";
 
 export default function Login({ navigation }) {
     const [userName, setUserName] = useState("");
@@ -12,7 +13,7 @@ export default function Login({ navigation }) {
         alert("signin");
     };
     const onForgotPassword = async () => {
-        alert("signin");
+        alert("jag glum");
     };
 
     return (
@@ -21,6 +22,7 @@ export default function Login({ navigation }) {
             showsVerticalScrollIndicator={false}
         >
             <Text style={styles.title}>LOGIN</Text>
+            <Text style={styles.text}>Start slaying those dragons</Text>
 
             <CustomInput
                 placeholder="Username"
@@ -71,5 +73,10 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         margin: 10,
         color: "white",
+    },
+    text: {
+        fontSize: 16,
+        color: "#eee",
+        marginBottom: 30,
     },
 });
