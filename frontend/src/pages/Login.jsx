@@ -2,15 +2,36 @@ import { StyleSheet, Text, ScrollView } from "react-native";
 import React, { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
-import { useDispatch } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
+import { login, reset } from "../features/auth/authSlice";
 
 export default function Login({ navigation }) {
-    const [userName, setUserName] = useState("");
-    const [password, setPassword] = useState("");
     const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+
+    const dispatch = useDispatch();
+
+    const { user, isLoading, isError, isSuccess, message } = useSelector(
+        (state) => state.auth
+    );
+
+    useEffect(() => {
+        if (isError) {
+            alert(message);
+        }
+        if (isSuccess || user) {
+            navigation.navigate("Dashboard");
+        }
+        dispatch(reset());
+    }, [user, isError, isSuccess, message, dispatch]);
 
     const onSignIn = async () => {
-        alert("signin");
+        const userData = {
+            email,
+            password,
+        };
+
+        dispatch(login(userData));
     };
     const onForgotPassword = async () => {
         alert("jag glum");
@@ -26,8 +47,8 @@ export default function Login({ navigation }) {
 
             <CustomInput
                 placeholder="Username"
-                value={userName}
-                setValue={setUserName}
+                value={email}
+                setValue={setEmail}
             />
             <CustomInput
                 placeholder="Password"
