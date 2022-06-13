@@ -8,7 +8,6 @@ import asyncHandler from "express-async-handler";
 
 export const createCharacter = asyncHandler(async (req: any, res: Response) => {
     const { name } = req.body;
-
     const newCharacter = new Character<CharacterInterface>({
         name: name,
         inventory: [],

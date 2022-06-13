@@ -13,7 +13,8 @@ export const registerUser = asyncHandler(
             res.status(400);
             throw new Error("Please add all fields");
         }
-        const userExists = await User.findOne({ email });
+
+        const userExists = await User.findOne({ email: email.toLowerCase() });
 
         if (userExists) {
             res.status(400);
@@ -46,7 +47,7 @@ export const registerUser = asyncHandler(
 export const loginUser = asyncHandler(async (req: Request, res: Response) => {
     const { email, password } = req.body;
 
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ email: email.toLowerCase() });
 
     if (user && (await bcrypt.compare(password, user.password))) {
         res.json({

@@ -46,7 +46,7 @@ export default function Login({ navigation }) {
             <Text style={styles.text}>Start slaying those dragons</Text>
 
             <CustomInput
-                placeholder="Username"
+                placeholder="Email"
                 value={email}
                 setValue={setEmail}
             />

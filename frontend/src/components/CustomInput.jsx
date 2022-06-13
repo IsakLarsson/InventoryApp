@@ -1,7 +1,7 @@
 import React from "react";
 import { View, TextInput, StyleSheet } from "react-native";
 
-export default function Input({
+export default function CustomInput({
     value,
     setValue,
     placeholder,

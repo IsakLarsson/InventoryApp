@@ -12,7 +12,7 @@ import { protect } from "../middleware/authMiddleware";
 
 const characterRoutes = express.Router();
 
-characterRoutes.post("/api/characters/create", protect, createCharacter);
+characterRoutes.post("/api/characters/", protect, createCharacter);
 
 characterRoutes.get("/api/characters/:id", protect, getCharacterById);
 
