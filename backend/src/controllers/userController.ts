@@ -26,7 +26,7 @@ export const registerUser = asyncHandler(
 
         const user = await User.create({
             name: name,
-            email: email,
+            email: email.toLowerCase(),
             password: hashedPassword,
         });
 

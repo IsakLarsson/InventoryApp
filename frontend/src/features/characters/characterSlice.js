@@ -27,11 +27,45 @@ export const createCharacter = createAsyncThunk(
     }
 );
 
+export const getCharacters = createAsyncThunk(
+    "characters/getAll",
+    async (_, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token;
+            return await characterService.getCharacters(token);
+        } catch (error) {
+            (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+                error.message ||
+                error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
+export const deleteCharacter = createAsyncThunk(
+    "characters/delete",
+    async (id, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token;
+            return await characterService.deleteCharacter(id, token);
+        } catch (error) {
+            (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+                error.message ||
+                error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 export const characterSlice = createSlice({
     name: "characters",
     initialState,
     reducers: {
-        reset: (state) => initialState,
+        resetCharacters: (state) => initialState,
     },
     extraReducers: (builder) => {
         builder
@@ -41,9 +75,39 @@ export const characterSlice = createSlice({
             .addCase(createCharacter.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                state.characters.push(action.payload);
+                state.characters.push(action.payload.created_character);
             })
             .addCase(createCharacter.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.payload;
+            })
+            .addCase(getCharacters.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getCharacters.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                state.characters = action.payload.characters;
+            })
+            .addCase(getCharacters.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.payload;
+            })
+            .addCase(deleteCharacter.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteCharacter.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                console.log(action.payload);
+                state.characters = state.characters.filter(
+                    (character) =>
+                        character._id !== action.payload.deletedCharacter._id
+                );
+            })
+            .addCase(deleteCharacter.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = false;
                 state.message = action.payload;
@@ -51,5 +115,5 @@ export const characterSlice = createSlice({
     },
 });
 
-export const { reset } = characterSlice.actions;
+export const { resetCharacters } = characterSlice.actions;
 export default characterSlice.reducer;

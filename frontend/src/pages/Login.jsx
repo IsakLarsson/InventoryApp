@@ -3,7 +3,7 @@ import React, { useState, useEffect } from "react";
 import CustomInput from "../components/CustomInput";
 import CustomButton from "../components/CustomButton";
 import { useSelector, useDispatch } from "react-redux";
-import { login, reset } from "../features/auth/authSlice";
+import { login, resetAuth } from "../features/auth/authSlice";
 
 export default function Login({ navigation }) {
     const [email, setEmail] = useState("");
@@ -22,7 +22,7 @@ export default function Login({ navigation }) {
         if (isSuccess || user) {
             navigation.navigate("Dashboard");
         }
-        dispatch(reset());
+        dispatch(resetAuth());
     }, [user, isError, isSuccess, message, dispatch]);
 
     const onSignIn = async () => {

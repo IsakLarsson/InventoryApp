@@ -3,7 +3,10 @@ import React, { useState } from "react";
 import { useSelector, useDispatch } from "react-redux";
 import CustomInput from "./CustomInput";
 import CustomButton from "./CustomButton";
-import { createCharacter } from "../features/characters/characterSlice";
+import {
+    createCharacter,
+    getCharacters,
+} from "../features/characters/characterSlice";
 
 const CharacterForm = () => {
     const [characterName, setCharacterName] = useState("");
@@ -17,7 +20,7 @@ const CharacterForm = () => {
 
     return (
         <View style={styles.container}>
-            <Text>Create a new character</Text>
+            <Text style={styles.title}>Create a new character</Text>
             <CustomInput
                 placeholder={"Character name"}
                 value={characterName}
@@ -39,5 +42,11 @@ const styles = StyleSheet.create({
         width: "100%",
         alignItems: "center",
         justifyContent: "center",
+    },
+    title: {
+        fontSize: 24,
+        fontWeight: "bold",
+        margin: 10,
+        color: "white",
     },
 });

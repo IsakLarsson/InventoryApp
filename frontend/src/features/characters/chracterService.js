@@ -2,7 +2,6 @@ import axios from "axios";
 
 const API_URL = "http://192.168.0.166:3000/api/characters/";
 
-//Create new character
 const createCharacter = async (characterData, token) => {
     const config = {
         headers: {
@@ -15,8 +14,33 @@ const createCharacter = async (characterData, token) => {
     return response.data;
 };
 
+const getCharacters = async (token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    const response = await axios.get(API_URL, config);
+
+    return response.data;
+};
+
+const deleteCharacter = async (characterId, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    const response = await axios.delete(API_URL + characterId, config);
+
+    return response.data;
+};
+
 const characterService = {
     createCharacter,
+    getCharacters,
+    deleteCharacter,
 };
 
 export default characterService;
