@@ -33,15 +33,15 @@ export default function Dashboard({ navigation }) {
         }
         dispatch(getCharacters());
 
-        return () => {
-            dispatch(resetCharacters());
-        };
+        /* return () => {
+            // dispatch(resetCharacters());
+        }; */
     }, [user, isError, message, dispatch]);
 
     return (
         <View style={styles.container}>
             <Text style={styles.title}>
-                You are now logged in as {user.name}
+                You are now logged in as *REDACTED*
             </Text>
             {characters.length > 0 ? (
                 characters.map((character, index) => (

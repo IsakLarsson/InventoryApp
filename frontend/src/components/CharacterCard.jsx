@@ -1,23 +1,32 @@
+import React from "react";
 import { Pressable, StyleSheet, Text, View } from "react-native";
 import { useDispatch } from "react-redux";
-import { deleteCharacter } from "../features/characters/characterSlice";
-
-import React from "react";
+import {
+    deleteCharacter,
+    selectCharacter,
+} from "../features/characters/characterSlice";
+import { useNavigation } from "@react-navigation/native";
 
 const CharacterCard = ({ character }) => {
     const { gold, silver, copper } = character.coins;
 
     const dispatch = useDispatch();
+    const navigation = useNavigation();
+
+    const onDelete = () => {
+        dispatch(deleteCharacter(character._id));
+    };
+
+    const onSelect = () => {
+        dispatch(selectCharacter(character));
+        navigation.navigate("CharacterScreen");
+    };
 
     return (
         <View style={styles.container}>
             <View style={styles.row}>
                 <Text style={styles.name}>{character.name}</Text>
-                <Pressable
-                    onPress={() => {
-                        dispatch(deleteCharacter(character._id));
-                    }}
-                >
+                <Pressable onPress={onDelete}>
                     <Text style={[styles.name, { color: "red" }]}>X</Text>
                 </Pressable>
             </View>
@@ -25,6 +34,9 @@ const CharacterCard = ({ character }) => {
             <Text style={styles.text}>
                 {gold} Gold, {silver} Silver, {copper} Copper
             </Text>
+            <Pressable onPress={onSelect}>
+                <Text style={[styles.name, { color: "#67ee67" }]}>Select</Text>
+            </Pressable>
         </View>
     );
 };

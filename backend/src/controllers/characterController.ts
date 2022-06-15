@@ -66,6 +66,10 @@ export const addItemToInventory = asyncHandler(
         const characterId = req.params.id;
         const { itemName, value, description } = req.body;
 
+        if (!itemName || !value) {
+            throw new Error("Missing required fields");
+        }
+
         const newItem = new Item<ItemInterface>({
             itemName: itemName,
             value: value,
@@ -78,7 +82,7 @@ export const addItemToInventory = asyncHandler(
             if (foundCharacter != undefined) {
                 foundCharacter.inventory.push(newItem);
                 await foundCharacter.save();
-                res.status(200).json({ updatedCharacter: foundCharacter });
+                res.status(200).json({ addedItem: newItem });
                 return;
             } else {
                 res.status(404).json({

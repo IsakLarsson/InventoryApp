@@ -37,10 +37,27 @@ const deleteCharacter = async (characterId, token) => {
     return response.data;
 };
 
+const addItem = async (id, item, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+    console.log("ADding item: ", item);
+    const response = await axios.patch(
+        `${API_URL}${id}/inventory/addItem`,
+        item,
+        config
+    );
+
+    return response.data;
+};
+
 const characterService = {
     createCharacter,
     getCharacters,
     deleteCharacter,
+    addItem,
 };
 
 export default characterService;

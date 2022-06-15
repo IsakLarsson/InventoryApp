@@ -2,6 +2,7 @@ import { createSlice, createAsyncThunk } from "@reduxjs/toolkit";
 import characterService from "./chracterService";
 
 const initialState = {
+    selectedCharacter: null,
     characters: [],
     isError: false,
     isSuccess: false,
@@ -61,11 +62,32 @@ export const deleteCharacter = createAsyncThunk(
     }
 );
 
+export const addItem = createAsyncThunk(
+    "characters/addItem",
+    async ({ id, newItem }, thunkAPI) => {
+        try {
+            const token = thunkAPI.getState().auth.user.token;
+            return await characterService.addItem(id, newItem, token);
+        } catch (error) {
+            (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+                error.message ||
+                error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 export const characterSlice = createSlice({
     name: "characters",
     initialState,
     reducers: {
         resetCharacters: (state) => initialState,
+        selectCharacter: (state, action) => {
+            console.log("Selected char : ", action.payload);
+            state.selectedCharacter = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -111,9 +133,25 @@ export const characterSlice = createSlice({
                 state.isLoading = false;
                 state.isSuccess = false;
                 state.message = action.payload;
+            })
+            .addCase(addItem.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(addItem.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                console.log(action.payload);
+                state.selectedCharacter.inventory.push(
+                    action.payload.addedItem
+                );
+            })
+            .addCase(addItem.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.payload;
             });
     },
 });
 
-export const { resetCharacters } = characterSlice.actions;
+export const { resetCharacters, selectCharacter } = characterSlice.actions;
 export default characterSlice.reducer;
