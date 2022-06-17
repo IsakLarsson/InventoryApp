@@ -1,5 +1,5 @@
-import { StyleSheet, Text, View } from "react-native";
-import React, { useEffect } from "react";
+import { StyleSheet, Text, View, Modal } from "react-native";
+import React, { useEffect, useState } from "react";
 import CustomButton from "../components/CustomButton";
 import { useSelector, useDispatch } from "react-redux";
 import { logout, resetAuth } from "../features/auth/authSlice";
@@ -13,9 +13,8 @@ import CharacterCard from "../components/CharacterCard";
 export default function Dashboard({ navigation }) {
     const dispatch = useDispatch();
     const { user } = useSelector((state) => state.auth);
-    const { characters, isLoading, isError, message } = useSelector(
-        (state) => state.characters
-    );
+    const { characters, selectedCharacter, isLoading, isError, message } =
+        useSelector((state) => state.characters);
 
     const logoutUser = () => {
         dispatch(logout());
@@ -27,16 +26,15 @@ export default function Dashboard({ navigation }) {
         if (isError) {
             alert(message);
         }
-
         if (!user) {
             navigation.navigate("Login");
         }
         dispatch(getCharacters());
 
-        /* return () => {
-            // dispatch(resetCharacters());
+        /*  return () => {
+            dispatch(resetCharacters());
         }; */
-    }, [user, isError, message, dispatch]);
+    }, [user, isError, message, selectedCharacter, dispatch]);
 
     return (
         <View style={styles.container}>

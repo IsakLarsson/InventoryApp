@@ -6,8 +6,11 @@ import { useSelector, useDispatch } from "react-redux";
 import { login, resetAuth } from "../features/auth/authSlice";
 
 export default function Login({ navigation }) {
-    const [email, setEmail] = useState("");
-    const [password, setPassword] = useState("");
+    {
+        /* Remember to remove these standard values */
+    }
+    const [email, setEmail] = useState("B");
+    const [password, setPassword] = useState("1");
 
     const dispatch = useDispatch();
 

@@ -140,7 +140,7 @@ export const characterSlice = createSlice({
             .addCase(addItem.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                console.log(action.payload);
+                console.log("added item: ", action.payload);
                 state.selectedCharacter.inventory.push(
                     action.payload.addedItem
                 );
