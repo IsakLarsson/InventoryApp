@@ -79,6 +79,24 @@ export const addItem = createAsyncThunk(
     }
 );
 
+export const deleteItem = createAsyncThunk(
+    "characters/deleteItem",
+    async ({ id, item }, thunkAPI) => {
+        try {
+            console.log("deleting from slice", item);
+            const token = thunkAPI.getState().auth.user.token;
+            return await characterService.deleteItem(id, item, token);
+        } catch (error) {
+            (error.response &&
+                error.response.data &&
+                error.response.data.message) ||
+                error.message ||
+                error.toString();
+            return thunkAPI.rejectWithValue(message);
+        }
+    }
+);
+
 export const characterSlice = createSlice({
     name: "characters",
     initialState,
@@ -146,6 +164,22 @@ export const characterSlice = createSlice({
                 );
             })
             .addCase(addItem.rejected, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = false;
+                state.message = action.payload;
+            })
+            .addCase(deleteItem.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(deleteItem.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.isSuccess = true;
+                console.log("added item: ", action.payload);
+                state.selectedCharacter.inventory.filter(
+                    (item) => item.name !== action.payload.deletedItem
+                );
+            })
+            .addCase(deleteItem.rejected, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = false;
                 state.message = action.payload;

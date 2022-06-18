@@ -109,6 +109,7 @@ export const deleteItemFromInventory = asyncHandler(
         }
 
         try {
+            //Fix so that error occurs if notthing is found, also change to delete by ID instead of name
             const foundCharacter = await Character.findByIdAndUpdate(
                 characterId,
                 {

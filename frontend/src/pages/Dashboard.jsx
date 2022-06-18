@@ -31,9 +31,10 @@ export default function Dashboard({ navigation }) {
         }
         dispatch(getCharacters());
 
-        /*  return () => {
-            dispatch(resetCharacters());
-        }; */
+        return () => {
+            /*  dispatch(resetCharacters()); */
+            console.log("Dismounting dashboard");
+        };
     }, [user, isError, message, selectedCharacter, dispatch]);
 
     return (

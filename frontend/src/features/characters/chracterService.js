@@ -53,11 +53,33 @@ const addItem = async (id, item, token) => {
     return response.data;
 };
 
+const deleteItem = async (id, item, token) => {
+    const config = {
+        headers: {
+            Authorization: `Bearer ${token}`,
+        },
+    };
+
+    console.log("Deleting item: ", item);
+    console.log("TOKEN SENT", token);
+    console.log("character ID", id);
+    const data = { itemName: item.itemName };
+    //axios delete seems to be working different from the others
+    const response = await axios.delete(
+        `${API_URL}${id}/inventory/deleteItem`,
+        config,
+        data
+    );
+
+    return response.data;
+};
+
 const characterService = {
     createCharacter,
     getCharacters,
     deleteCharacter,
     addItem,
+    deleteItem,
 };
 
 export default characterService;
