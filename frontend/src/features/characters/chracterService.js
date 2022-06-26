@@ -44,11 +44,7 @@ const addItem = async (id, item, token) => {
     },
   };
   console.log("ADding item: ", item);
-  const response = await axios.patch(
-    `${API_URL}${id}/inventory/addItem`,
-    item,
-    config
-  );
+  const response = await axios.patch(`${API_URL}${id}/inventory`, item, config);
 
   return response.data;
 };

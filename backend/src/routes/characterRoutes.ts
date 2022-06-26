@@ -18,7 +18,7 @@ characterRoutes.get("/api/characters/:id", protect, getCharacterById);
 
 characterRoutes.get("/api/characters/", protect, getAllCharacters);
 
-characterRoutes.post(
+characterRoutes.patch(
   "/api/characters/:id/inventory/",
   protect,
   addItemToInventory
@@ -27,7 +27,7 @@ characterRoutes.post(
 characterRoutes.patch("/api/characters/:id/coins", protect, changeCoinsById);
 
 characterRoutes.delete(
-  "/api/characters/:id/inventory/:itemid",
+  "/api/characters/:id/inventory/:id",
   protect,
   deleteItemFromInventory
 );
