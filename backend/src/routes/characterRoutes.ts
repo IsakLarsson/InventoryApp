@@ -18,7 +18,7 @@ characterRoutes.get("/api/characters/:id", protect, getCharacterById);
 
 characterRoutes.get("/api/characters/", protect, getAllCharacters);
 
-characterRoutes.patch(
+characterRoutes.post(
   "/api/characters/:id/inventory/",
   protect,
   addItemToInventory
