@@ -5,6 +5,7 @@ import Character from "../models/characterModel";
 import { Coins } from "../interfaces/coins";
 import Item from "../models/itemModel";
 import asyncHandler from "express-async-handler";
+import { ObjectId } from "mongodb";
 
 export const createCharacter = asyncHandler(async (req: any, res: Response) => {
     const { name } = req.body;
@@ -100,24 +101,20 @@ export const deleteItemFromInventory = asyncHandler(
     async (req: Request, res: Response) => {
         const characterId = req.params.id;
         const itemID = req.params.itemid;
-        console.log("Deleting item:", itemID);
-        const { itemName } = req.body;
-
-        if (!itemName) {
-            res.status(500).json({ errorMessage: "Invalid body" });
-            return;
-        }
+        console.log(itemID);
 
         try {
+            /* Still needs to throw error if item is not found */
             const foundCharacter = await Character.findByIdAndUpdate(
                 characterId,
                 {
-                    $pull: { inventory: { _id: itemID } },
+                    $pull: { inventory: { _id: new ObjectId(itemID) } },
                 },
                 {
                     new: true,
                 }
             ).exec();
+
             if (foundCharacter != undefined) {
                 res.status(200).json({ updatedCharacter: foundCharacter });
             } else {
@@ -135,10 +132,10 @@ export const deleteItemFromInventory = asyncHandler(
 export const deleteCharacterById = asyncHandler(
     async (req: Request, res: Response) => {
         const characterId = req.params.id;
+
         if (!idIsValid(characterId)) {
             throw new Error("Invalid ID");
         }
-
         try {
             const deletedCharacter = await Character.findByIdAndDelete(
                 characterId

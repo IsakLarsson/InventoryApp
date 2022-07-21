@@ -30,11 +30,10 @@ export default function Dashboard({ navigation }) {
             navigation.navigate("Login");
         }
         dispatch(getCharacters());
-
+        /* 
         return () => {
-            /*  dispatch(resetCharacters()); */
             console.log("Dismounting dashboard");
-        };
+        }; */
     }, [user, isError, message, selectedCharacter, dispatch]);
 
     return (
