@@ -44,8 +44,8 @@ const addItem = async (id, item, token) => {
         },
     };
     console.log("ADding item: ", item);
-    const response = await axios.patch(
-        `${API_URL}${id}/inventory/addItem`,
+    const response = await axios.post(
+        `${API_URL}${id}/inventory`,
         item,
         config
     );
@@ -54,23 +54,16 @@ const addItem = async (id, item, token) => {
 };
 
 const deleteItem = async (id, item, token) => {
+    const itemID = item._id;
     const config = {
         headers: {
             Authorization: `Bearer ${token}`,
         },
     };
-
-    console.log("Deleting item: ", item);
-    console.log("TOKEN SENT", token);
-    console.log("character ID", id);
-    const data = { itemName: item.itemName };
-    //axios delete seems to be working different from the others
     const response = await axios.delete(
-        `${API_URL}${id}/inventory/deleteItem`,
-        config,
-        data
+        `${API_URL}${id}/inventory/${itemID}`,
+        config
     );
-
     return response.data;
 };
 

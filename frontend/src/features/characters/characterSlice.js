@@ -174,7 +174,7 @@ export const characterSlice = createSlice({
             .addCase(deleteItem.fulfilled, (state, action) => {
                 state.isLoading = false;
                 state.isSuccess = true;
-                console.log("added item: ", action.payload);
+                console.log("deleted item: ", action.payload);
                 state.selectedCharacter.inventory.filter(
                     (item) => item.name !== action.payload.deletedItem
                 );

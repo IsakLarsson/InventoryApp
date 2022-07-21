@@ -5,6 +5,7 @@ import Character from "../models/characterModel";
 import { Coins } from "../interfaces/coins";
 import Item from "../models/itemModel";
 import asyncHandler from "express-async-handler";
+import { ObjectId } from "mongodb";
 
 export const createCharacter = asyncHandler(async (req: any, res: Response) => {
     const { name } = req.body;
@@ -85,10 +86,8 @@ export const addItemToInventory = asyncHandler(
                 res.status(200).json({ addedItem: newItem });
                 return;
             } else {
-                res.status(404).json({
-                    message: "Couldn't find that character!",
-                });
-                return;
+                res.status(404);
+                throw new Error("Couldnt find that character!");
             }
         } catch (error) {
             if (error instanceof Error) {
@@ -101,25 +100,27 @@ export const addItemToInventory = asyncHandler(
 export const deleteItemFromInventory = asyncHandler(
     async (req: Request, res: Response) => {
         const characterId = req.params.id;
-        const { itemName } = req.body;
-
-        if (!itemName) {
-            res.status(500).json({ errorMessage: "Invalid body" });
-            return;
-        }
+        const itemID = req.params.itemid;
+        console.log(itemID);
 
         try {
-            //Fix so that error occurs if notthing is found, also change to delete by ID instead of name
+            /* Still needs to throw error if item is not found */
             const foundCharacter = await Character.findByIdAndUpdate(
                 characterId,
                 {
-                    $pull: { inventory: { itemName: itemName } },
+                    $pull: { inventory: { _id: new ObjectId(itemID) } },
                 },
                 {
                     new: true,
                 }
-            );
-            res.status(200).json({ updatedCharacter: foundCharacter });
+            ).exec();
+
+            if (foundCharacter != undefined) {
+                res.status(200).json({ updatedCharacter: foundCharacter });
+            } else {
+                res.status(404);
+                throw new Error("Couldnt find that character!");
+            }
         } catch (error) {
             if (error instanceof Error) {
                 throw new Error(error.message);
@@ -131,10 +132,10 @@ export const deleteItemFromInventory = asyncHandler(
 export const deleteCharacterById = asyncHandler(
     async (req: Request, res: Response) => {
         const characterId = req.params.id;
+
         if (!idIsValid(characterId)) {
             throw new Error("Invalid ID");
         }
-
         try {
             const deletedCharacter = await Character.findByIdAndDelete(
                 characterId
